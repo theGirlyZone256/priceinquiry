@@ -830,12 +830,8 @@
                             <div class="currency-prefix">UGX</div>
                             <input type="number" id="price-${product.id}" step="1" min="0" placeholder="Enter amount" required>
                         </div>
-                        <label for="colors-${product.id}">Available Colors / Variations (Optional)</label>
-                        <input type="text" id="colors-${product.id}" placeholder="e.g., Red, Blue, Green">
-                        <label for="notes-${product.id}">Additional Notes (Optional)</label>
-                        <textarea id="notes-${product.id}" rows="2" placeholder="Condition, stock, delivery time..."></textarea>
-                        <button class="browse-btn" style="margin-top:20px;" onclick="submitSingleInquiry('${product.id}', ${index + 1})">
-                            <i class="fas fa-paper-plane"></i> Submit for This Item
+                        <button class="browse-btn" style="margin-top:20px; width:100%;" onclick="submitSingleInquiry('${product.id}')">
+                            <i class="fas fa-paper-plane"></i> Submit Price for This Item
                         </button>
                         <div id="message-${product.id}" style="margin-top:15px; min-height:24px;"></div>
                     </div>
@@ -847,7 +843,7 @@
             </div>
             <div style="text-align:center; margin-top:50px; padding-top:30px; border-top:2px solid var(--bg-card-light);">
                 <button class="submit-btn" onclick="submitAllInquiries()" style="padding:20px 50px;">
-                    <i class="fas fa-paper-plane"></i> Submit All Responses at Once
+                    <i class="fas fa-paper-plane"></i> Submit All Prices at Once
                 </button>
                 <div id="allResponsesMessage" style="margin-top:20px; min-height:30px;"></div>
             </div>
@@ -856,202 +852,125 @@
         document.getElementById('responderContent').innerHTML = html;
     }
 
-   // ================= EMAIL SUBMISSION FUNCTIONS =================
-async function submitSingleInquiry(productId, itemNumber) {
-    const priceInput = document.getElementById(`price-${productId}`);
-    const colorsInput = document.getElementById(`colors-${productId}`);
-    const notesInput = document.getElementById(`notes-${productId}`);
-    const messageEl = document.getElementById(`message-${productId}`);
-    
-    const price = priceInput.value.trim();
-    const colors = colorsInput.value.trim();
-    const notes = notesInput.value.trim();
-    
-    if (!price || isNaN(price) || Number(price) <= 0) {
-        messageEl.innerHTML = '<span style="color:var(--accent-red);">❌ Please enter a valid price in UGX.</span>';
-        priceInput.focus();
-        return;
-    }
-    
-    messageEl.innerHTML = '<span style="color:var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Sending email to Marvin...</span>';
-    priceInput.disabled = true;
-    colorsInput.disabled = true;
-    notesInput.disabled = true;
-    
-    try {
-        // Get the product image URL
-        const product = currentProducts.find(p => p.id === productId);
-        const imageUrl = product?.imageUrl || '';
+    // ================= EMAIL SUBMISSION FUNCTIONS =================
+    async function submitSingleInquiry(productId) {
+        const priceInput = document.getElementById(`price-${productId}`);
+        const messageEl = document.getElementById(`message-${productId}`);
         
-        // Format the price with commas
-        const formattedPrice = `UGX ${Number(price).toLocaleString()}`;
+        const price = priceInput.value.trim();
         
-        // Format date nicely
-        const now = new Date();
-        const formattedDate = now.toLocaleString('en-US', {
-            weekday: 'short',
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        if (!price || isNaN(price) || Number(price) <= 0) {
+            messageEl.innerHTML = '<span style="color:var(--accent-red);">❌ Please enter a valid price in UGX.</span>';
+            priceInput.focus();
+            return;
+        }
         
-        // Prepare email data for SINGLE item
-        const emailData = {
-            to_email: 'epignosistic@gmail.com',
-            project_name: currentProjectName || 'Product Inquiry',
-            product_id: productId,
-            item_number: itemNumber.toString(), // Ensure it's a string
-            product_image: imageUrl,
-            price: formattedPrice,
-            colors: colors || 'Not specified',
-            notes: notes || 'None',
-            submitted_at: formattedDate,
-            currentYear: now.getFullYear().toString()
-        };
+        messageEl.innerHTML = '<span style="color:var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Sending email to Marvin...</span>';
+        priceInput.disabled = true;
         
-        console.log('📧 Sending single item email:', emailData);
-        
-        // Send email via EmailJS - Use SINGLE template
-        const response = await emailjs.send(
-            EMAILJS_SERVICE_ID,
-            EMAILJS_TEMPLATE_ID, // This should be your SINGLE item template ID
-            emailData
-        );
-        
-        if (response.status === 200) {
-            messageEl.innerHTML = '<span style="color:var(--accent-green);">✅ Price submitted! Email sent to Marvin.</span>';
-            priceInput.style.borderColor = 'var(--accent-green)';
-            priceInput.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+        try {
+            // Get the product image URL
+            const product = currentProducts.find(p => p.id === productId);
+            const imageUrl = product?.imageUrl || '';
             
-            // Mark as submitted in UI
-            const submitBtn = priceInput.parentElement.parentElement.querySelector('.browse-btn');
-            if (submitBtn) {
-                submitBtn.innerHTML = '<i class="fas fa-check"></i> Submitted';
-                submitBtn.style.background = 'linear-gradient(135deg, var(--accent-green), #059669)';
-                submitBtn.disabled = true;
-                submitBtn.onclick = null;
+            // Format the price with commas
+            const formattedPrice = `UGX ${Number(price).toLocaleString()}`;
+            
+            // Prepare email data - ONLY product_image and price
+            const emailData = {
+                to_email: 'epignosistic@gmail.com',
+                product_image: imageUrl,
+                price: formattedPrice
+            };
+            
+            console.log('📧 Sending email with:', emailData);
+            
+            // Send email via EmailJS
+            const response = await emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_TEMPLATE_ID,
+                emailData
+            );
+            
+            if (response.status === 200) {
+                messageEl.innerHTML = '<span style="color:var(--accent-green);">✅ Price submitted! Email sent to Marvin.</span>';
+                priceInput.style.borderColor = 'var(--accent-green)';
+                priceInput.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                
+                // Mark as submitted in UI
+                const submitBtn = priceInput.parentElement.parentElement.querySelector('.browse-btn');
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Submitted';
+                    submitBtn.style.background = 'linear-gradient(135deg, var(--accent-green), #059669)';
+                    submitBtn.disabled = true;
+                    submitBtn.onclick = null;
+                }
+                
+                console.log('✅ Email sent successfully');
+            } else {
+                throw new Error(`Email failed with status: ${response.status}`);
             }
-            
-            console.log('✅ Single item email sent successfully:', response);
-        } else {
-            throw new Error(`Email failed with status: ${response.status}`);
+        } catch (error) {
+            console.error('Email submission error:', error);
+            messageEl.innerHTML = `<span style="color:var(--accent-red);">❌ Error: ${error.message || 'Failed to send email'}</span>`;
+            priceInput.disabled = false;
         }
-    } catch (error) {
-        console.error('Email submission error:', error);
-        messageEl.innerHTML = `<span style="color:var(--accent-red);">❌ Error: ${error.message || 'Failed to send email'}</span>`;
-        priceInput.disabled = false;
-        colorsInput.disabled = false;
-        notesInput.disabled = false;
     }
-}
 
-async function submitAllInquiries() {
-    const allResponsesMessage = document.getElementById('allResponsesMessage');
-    allResponsesMessage.innerHTML = '<span style="color:var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Collecting and sending all responses...</span>';
-    
-    let submittedCount = 0;
-    const allResponses = [];
-    const now = new Date();
-    const formattedDate = now.toLocaleString('en-US', {
-        weekday: 'short',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-    
-    // Collect all responses
-    for (let i = 0; i < currentProducts.length; i++) {
-        const product = currentProducts[i];
-        const priceInput = document.getElementById(`price-${product.id}`);
-        const price = priceInput?.value.trim();
+    async function submitAllInquiries() {
+        const allResponsesMessage = document.getElementById('allResponsesMessage');
+        allResponsesMessage.innerHTML = '<span style="color:var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Sending all prices...</span>';
         
-        if (price && !isNaN(price) && Number(price) > 0) {
-            const colors = document.getElementById(`colors-${product.id}`)?.value.trim() || '';
-            const notes = document.getElementById(`notes-${product.id}`)?.value.trim() || '';
+        let submittedCount = 0;
+        const allResponses = [];
+        
+        // Collect all responses
+        for (let i = 0; i < currentProducts.length; i++) {
+            const product = currentProducts[i];
+            const priceInput = document.getElementById(`price-${product.id}`);
+            const price = priceInput?.value.trim();
             
-            allResponses.push({
-                product_id: product.id,
-                item_number: i + 1,
-                product_image: product.imageUrl || '',
-                price: `UGX ${Number(price).toLocaleString()}`,
-                colors: colors || 'Not specified',
-                notes: notes || 'None'
-            });
-            
-            submittedCount++;
+            if (price && !isNaN(price) && Number(price) > 0) {
+                allResponses.push({
+                    product_id: product.id,
+                    product_image: product.imageUrl || '',
+                    price: `UGX ${Number(price).toLocaleString()}`
+                });
+                
+                submittedCount++;
+            }
         }
-    }
-    
-    if (allResponses.length === 0) {
-        allResponsesMessage.innerHTML = '<span style="color:var(--accent-red);">❌ No prices entered to submit.</span>';
-        return;
-    }
-    
-    try {
-        // Generate HTML for batch email
-        const responsesHTML = generateResponsesHTML(allResponses);
         
-        // Prepare email data for BATCH - you'll need a SEPARATE template
-        const emailData = {
-            to_email: 'epignosistic@gmail.com',
-            project_name: currentProjectName || 'Product Inquiry',
-            submitted_at: formattedDate,
-            total_items: allResponses.length.toString(),
-            responses_html: responsesHTML,
-            currentYear: now.getFullYear().toString()
-        };
-        
-        console.log('📧 Sending batch email for', allResponses.length, 'items');
-        
-        // For batch, you'll need to create a SEPARATE template in EmailJS
-        // const BATCH_TEMPLATE_ID = 'your_batch_template_id_here';
-        // const response = await emailjs.send(
-        //     EMAILJS_SERVICE_ID,
-        //     BATCH_TEMPLATE_ID, // Different template for batch
-        //     emailData
-        // );
-        
-        // For now, let's send individual emails for each item
-        allResponsesMessage.innerHTML = `<span style="color:var(--text-secondary);">Sending ${allResponses.length} individual emails...</span>`;
+        if (allResponses.length === 0) {
+            allResponsesMessage.innerHTML = '<span style="color:var(--accent-red);">❌ No prices entered to submit.</span>';
+            return;
+        }
         
         // Send individual emails for each item
+        allResponsesMessage.innerHTML = `<span style="color:var(--text-secondary);">Sending ${allResponses.length} emails...</span>`;
+        
         let sentCount = 0;
         for (const response of allResponses) {
             try {
-                const singleEmailData = {
+                const emailData = {
                     to_email: 'epignosistic@gmail.com',
-                    project_name: currentProjectName || 'Product Inquiry',
-                    product_id: response.product_id,
-                    item_number: response.item_number.toString(),
                     product_image: response.product_image,
-                    price: response.price,
-                    colors: response.colors,
-                    notes: response.notes,
-                    submitted_at: formattedDate,
-                    currentYear: now.getFullYear().toString()
+                    price: response.price
                 };
                 
                 await emailjs.send(
                     EMAILJS_SERVICE_ID,
-                    EMAILJS_TEMPLATE_ID, // Use the single template
-                    singleEmailData
+                    EMAILJS_TEMPLATE_ID,
+                    emailData
                 );
                 
                 sentCount++;
                 
                 // Update UI for this product
                 const priceInput = document.getElementById(`price-${response.product_id}`);
-                const colorsInput = document.getElementById(`colors-${response.product_id}`);
-                const notesInput = document.getElementById(`notes-${response.product_id}`);
                 const submitBtn = priceInput?.parentElement.parentElement.querySelector('.browse-btn');
                 
                 if (priceInput) priceInput.disabled = true;
-                if (colorsInput) colorsInput.disabled = true;
-                if (notesInput) notesInput.disabled = true;
                 
                 if (submitBtn) {
                     submitBtn.innerHTML = '<i class="fas fa-check"></i> Submitted';
@@ -1066,7 +985,7 @@ async function submitAllInquiries() {
                 }
                 
             } catch (error) {
-                console.error(`Failed to send email for item ${response.item_number}:`, error);
+                console.error(`Failed to send email for product ${response.product_id}:`, error);
             }
         }
         
@@ -1074,12 +993,19 @@ async function submitAllInquiries() {
         setTimeout(() => {
             alert(`Thank you! ${sentCount} price(s) have been submitted to Marvin.`);
         }, 500);
-        
-    } catch (error) {
-        console.error('Batch email error:', error);
-        allResponsesMessage.innerHTML = `<span style="color:var(--accent-red);">❌ Error: ${error.message || 'Failed to send batch email'}</span>`;
     }
-}
+
+    function showResponseError(message) {
+        document.getElementById('responderContent').innerHTML = `
+            <div style="text-align:center; padding:60px 20px;">
+                <h2 style="color:var(--accent-red);"><i class="fas fa-exclamation-triangle"></i> Error Loading Project</h2>
+                <p style="color:var(--text-secondary); margin:20px 0;">${message}</p>
+                <button class="browse-btn" onclick="location.reload()">
+                    <i class="fas fa-redo"></i> Try Again
+                </button>
+            </div>
+        `;
+    }
 
     // ================= UTILITY FUNCTIONS =================
     function showLoading(text) {
