@@ -1,3 +1,1141 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marvin's Inquiry Systems | Batch Upload</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Add EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        /* ===== MODERN DARK THEME ===== */
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #151522;
+            --bg-card-light: #1e1e2d;
+            --text-primary: #f0f0f0;
+            --text-secondary: #b0b0d0;
+            --accent-blue: #4f46e5;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+            --border-radius: 20px;
+            --shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { box-sizing: border-box; margin: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        body {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.1) 0%, transparent 25%),
+                radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 25%);
+        }
+        /* ===== LOGO & HEADER ===== */
+        .header {
+            text-align: center;
+            margin: 20px 0 40px;
+            width: 100%;
+            max-width: 900px;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 15px;
+        }
+        .logo-placeholder {
+            width: 75px;
+            height: 75px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            box-shadow: var(--shadow);
+        }
+        .brand-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(to right, #f0f0f0, #a0a0ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+        .brand-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 5px;
+            text-align: right;
+            font-style: italic;
+            padding-right: 15px;
+        }
+        .header p {
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 25px auto;
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+        /* ===== MAIN CONTAINER ===== */
+        .container {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            padding: 45px;
+            width: 100%;
+            max-width: 900px;
+            box-shadow: var(--shadow);
+            border: 1px solid #2d2d40;
+            margin-bottom: 40px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple), var(--accent-green));
+        }
+        .container:hover { transform: translateY(-8px); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6); }
+        /* ===== TABS ===== */
+        .tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            background: var(--bg-card-light);
+            padding: 10px;
+            border-radius: 18px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 20px;
+            background: transparent;
+            border: none;
+            border-radius: 14px;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--accent-blue), #3730a3);
+            color: white;
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
+        }
+        .tab-btn:hover:not(.active) {
+            background: #252536;
+            color: var(--text-primary);
+        }
+        /* ===== UPLOAD ZONE ===== */
+        .upload-zone {
+            border: 3px dashed #4f46e5;
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            background: rgba(79, 70, 229, 0.05);
+            margin: 30px 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .upload-zone:hover, .upload-zone.dragover {
+            background: rgba(79, 70, 229, 0.12);
+            border-color: #8b5cf6;
+            transform: scale(1.01);
+        }
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--accent-blue);
+            margin-bottom: 20px;
+        }
+        .upload-zone h3 {
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        .upload-zone p {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+        .browse-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-blue), #3730a3);
+            color: white;
+            padding: 18px 40px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+        .browse-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+        }
+        #fileInput { display: none; }
+        /* ===== IMAGE PREVIEW GRID ===== */
+        .preview-section { margin-top: 40px; }
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .image-counter {
+            background: var(--bg-card-light);
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            color: var(--accent-green);
+            border: 2px solid var(--accent-green);
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .image-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border: 2px solid #2d2d40;
+            transition: var(--transition);
+            background: var(--bg-card-light);
+        }
+        .image-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 15px 30px rgba(79, 70, 229, 0.3);
+        }
+        .image-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+        }
+        .image-card .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-weight: bold;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+        .remove-btn:hover { opacity: 1; transform: scale(1.1); }
+        /* ===== PROJECT INFO & SUBMIT ===== */
+        .project-info {
+            background: var(--bg-card-light);
+            padding: 30px;
+            border-radius: 18px;
+            margin: 40px 0;
+            border-left: 6px solid var(--accent-purple);
+        }
+        .project-info label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .project-info input {
+            width: 100%;
+            padding: 20px;
+            background: var(--bg-dark);
+            border: 2px solid #373747;
+            border-radius: 14px;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+        .submit-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+            color: white;
+            border: none;
+            padding: 25px 60px;
+            border-radius: 16px;
+            font-size: 1.4rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            letter-spacing: 0.5px;
+        }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.4);
+        }
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        /* ===== RESULT BOX ===== */
+        .result-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(79, 70, 229, 0.1));
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 40px;
+            border: 2px solid var(--accent-green);
+            display: none;
+            text-align: center;
+        }
+        .result-box.show {
+            display: block;
+            animation: slideUp 0.7s cubic-bezier(0.2, 0.8, 0.3, 1);
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .result-box h2 {
+            color: var(--accent-green);
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+        .project-link-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed var(--accent-blue);
+            border-radius: 14px;
+            padding: 25px;
+            margin: 30px 0;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+        }
+        .copy-btn {
+            background: linear-gradient(135deg, var(--accent-blue), #3730a3);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin: 15px;
+            transition: var(--transition);
+        }
+        .copy-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4); }
+        /* ===== SHOPKEEPER VIEW ===== */
+        .shopkeeper-view { display: none; }
+        .shopkeeper-view.active { display: block; }
+        .project-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #2d2d40;
+        }
+        .products-container {
+            display: grid;
+            gap: 30px;
+        }
+        .product-item {
+            background: var(--bg-card-light);
+            border-radius: 18px;
+            padding: 30px;
+            border-left: 6px solid var(--accent-blue);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .product-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 3px solid #373747;
+        }
+        .product-form label {
+            display: block;
+            margin: 20px 0 10px;
+            font-weight: 700;
+        }
+        .currency-prefix {
+            background: var(--bg-dark);
+            padding: 18px;
+            border-radius: 12px 0 0 12px;
+            border: 2px solid #373747;
+            border-right: none;
+            font-weight: 700;
+            color: var(--accent-green);
+        }
+        .price-input { display: flex; }
+        .price-input input {
+            border-radius: 0 12px 12px 0;
+            border-left: none;
+        }
+        /* ===== MESSAGES & LOADING ===== */
+        .message {
+            padding: 22px;
+            border-radius: 16px;
+            margin: 30px 0;
+            font-weight: 800;
+            display: none;
+            text-align: center;
+        }
+        .message.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #a7f3d0;
+            border-left: 6px solid var(--accent-green);
+            display: block;
+        }
+        .message.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border-left: 6px solid var(--accent-red);
+            display: block;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 10, 15, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            font-size: 2rem;
+            color: var(--accent-blue);
+        }
+        .spinner-large {
+            width: 80px;
+            height: 80px;
+            border: 8px solid rgba(79, 70, 229, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-blue);
+            animation: spin 1.5s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .hidden { display: none; }
+        footer {
+            margin-top: 50px;
+            color: var(--text-secondary);
+            text-align: center;
+            font-size: 0.95rem;
+            width: 100%;
+            max-width: 900px;
+            padding: 25px;
+            border-top: 1px solid #2d2d40;
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+        <div class="logo-container">
+            <div class="logo-placeholder">
+                <i class="fas fa-layer-group"></i>
+            </div>
+            <div>
+                <h1 class="brand-title">Marvin's Inquiry Systems</h1>
+                <div class="brand-subtitle">constructed for theGirlyZone | Batch Upload</div>
+            </div>
+        </div>
+        <p>Upload <strong>multiple product images at once</strong> (30-60 images). Generate a single link to send to the shopkeeper. They will see all products and submit prices (in UGX) for each.</p>
+    </div>
+
+    <!-- ===== MAIN CONTAINER ===== -->
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchView('creatorView')">
+                <i class="fas fa-upload"></i> Create Batch Inquiry
+            </button>
+            <button class="tab-btn" onclick="switchView('responderView')">
+                <i class="fas fa-reply-all"></i> Respond to Batch
+            </button>
+        </div>
+
+        <!-- ===== CREATOR VIEW (FOR YOU) ===== -->
+        <div id="creatorView" class="creator-view">
+            <!-- Upload Zone -->
+            <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()" 
+                 ondragover="event.preventDefault(); this.classList.add('dragover')" 
+                 ondragleave="this.classList.remove('dragover')" 
+                 ondrop="handleDrop(event)">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3>Drag & Drop Your Product Images Here</h3>
+                <p>Upload up to 60 images at once (JPG, PNG, WebP). Max 1MB per image.</p>
+                <p><strong>Or click to browse</strong></p>
+                <button class="browse-btn">Select Images from Computer</button>
+                <input type="file" id="fileInput" accept="image/*" multiple onchange="handleFileSelect(event)">
+            </div>
+
+            <!-- Image Preview Grid -->
+            <div class="preview-section" id="previewSection" style="display:none;">
+                <div class="preview-header">
+                    <h3><i class="fas fa-images"></i> Selected Images</h3>
+                    <div class="image-counter" id="imageCounter">0 Images</div>
+                </div>
+                <div class="image-grid" id="imageGrid">
+                    <!-- Image cards will be inserted here by JavaScript -->
+                </div>
+                <p style="color:var(--text-secondary); margin-top:20px;">
+                    <i class="fas fa-info-circle"></i> Click the <i class="fas fa-times" style="color:var(--accent-red);"></i> button on any image to remove it.
+                </p>
+            </div>
+
+            <!-- Project Info -->
+            <div class="project-info">
+                <label for="projectName"><i class="fas fa-heading"></i> Project Name (Optional)</label>
+                <input type="text" id="projectName" placeholder="e.g., Store Consultation - May 2024, Summer Collection">
+                <p style="color:var(--text-secondary); margin-top:15px; font-size:0.95rem;">
+                    This helps you identify the batch later.
+                </p>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="submit-section">
+                <button class="submit-btn" id="submitBtn" onclick="uploadToImgBB()" disabled>
+                    <i class="fas fa-rocket"></i> Generate Batch Inquiry Link
+                </button>
+                <p style="color:var(--text-secondary); margin-top:20px;">
+                    This will upload images, create a project, and generate a single shareable link.
+                </p>
+            </div>
+
+            <!-- Result Box -->
+            <div class="result-box" id="resultBox">
+                <h2><i class="fas fa-check-circle"></i> Batch Inquiry Created!</h2>
+                <p>Your project has been created with <strong id="productCount">0</strong> product(s). Share this single link with the shopkeeper:</p>
+                <div class="project-link-box">
+                    <a id="generatedProjectLink" target="_blank" style="color:var(--accent-blue); font-weight:900; font-size:1.2rem;">[Link will appear here]</a>
+                </div>
+                <p style="margin:25px 0; color:var(--text-secondary);">
+                    <i class="fas fa-link"></i> The shopkeeper will see all images in a list and can submit prices for each.
+                </p>
+                <button class="copy-btn" onclick="copyProjectLink()">
+                    <i class="far fa-copy"></i> Copy Project Link
+                </button>
+                <button class="copy-btn" style="background:linear-gradient(135deg, #8b5cf6, #6d28d9);" onclick="location.reload()">
+                    <i class="fas fa-redo"></i> Create Another Batch
+                </button>
+            </div>
+
+            <!-- Messages -->
+            <div class="message" id="creatorMessage"></div>
+        </div>
+
+        <!-- ===== SHOPKEEPER VIEW (FOR RESPONDING) ===== -->
+        <div id="responderView" class="shopkeeper-view">
+            <div id="responderContent">
+                <!-- Content will be loaded dynamically by JavaScript -->
+                <div style="text-align:center; padding:60px 20px;">
+                    <h2><i class="fas fa-link"></i> No Project Loaded</h2>
+                    <p style="color:var(--text-secondary);">Open the inquiry link sent to you by the product inquirer.</p>
+                    <p style="color:var(--text-secondary); margin-top:20px;">If you have a link, it should look like:<br><code>.../app.html?project=proj_123456</code></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div style="text-align:center;">
+            <div class="spinner-large"></div>
+            <p style="margin-top:30px; font-size:1.5rem;" id="loadingText">Processing Images...</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>© <span id="currentYear"></span> Marvin's Inquiry Systems. Powered by Airtable & Vercel.</p>
+        <p style="margin-top:10px; font-size:0.9rem;">Batch Upload System v2.0 | All data is private and secure.</p>
+    </footer>
+
+    <script>
+    // ================= CONFIGURATION =================
+    const BACKEND_URL = 'https://price-inquiry-eta.vercel.app'; // For creating projects only
+    
+    // ================= EMAILJS CONFIGURATION =================
+    // ⚠️ YOUR EMAILJS CREDENTIALS ⚠️
+    const EMAILJS_PUBLIC_KEY = 'USZl9we875GzrxuMQ';
+    const EMAILJS_SERVICE_ID = 'service_0dpkl3h';
+    const EMAILJS_TEMPLATE_ID = 'template_hmbyp5f';
+    
+    // Initialize EmailJS
+    (function() {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+        console.log('✅ EmailJS initialized with key:', EMAILJS_PUBLIC_KEY);
+    })();
+    
+    // ================= GLOBAL VARIABLES =================
+    let selectedImages = [];
+    let currentProjectId = null;
+    let currentProducts = [];
+    let currentProjectName = '';
+
+    // ================= INITIALIZATION =================
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // Check URL for project ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectIdFromUrl = urlParams.get('project');
+        
+        if (projectIdFromUrl) {
+            // Switch to responder view
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            
+            document.getElementById('creatorView').style.display = 'none';
+            document.getElementById('responderView').classList.add('active');
+            
+            // Load the project
+            loadProjectForResponse(projectIdFromUrl);
+        }
+    });
+
+    // ================= VIEW SWITCHING =================
+    function switchView(viewName) {
+        // Update tabs
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('creatorView').style.display = 'none';
+        document.getElementById('responderView').classList.remove('active');
+        
+        if (viewName === 'creatorView') {
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            document.getElementById('creatorView').style.display = 'block';
+        } else {
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            document.getElementById('responderView').classList.add('active');
+            
+            // If we have a project ID in URL, load it
+            const urlParams = new URLSearchParams(window.location.search);
+            const projectId = urlParams.get('project');
+            if (projectId) {
+                loadProjectForResponse(projectId);
+            }
+        }
+    }
+
+    // ================= IMAGE HANDLING =================
+    function handleFileSelect(event) {
+        const files = Array.from(event.target.files);
+        addImageFiles(files);
+    }
+
+    function handleDrop(event) {
+        event.preventDefault();
+        event.currentTarget.classList.remove('dragover');
+        const files = Array.from(event.dataTransfer.files)
+            .filter(f => f.type.startsWith('image/') && f.size <= 1048576); // 1MB limit
+        addImageFiles(files);
+    }
+
+    function addImageFiles(files) {
+        if (files.length === 0) return;
+        
+        const remainingSlots = 60 - selectedImages.length;
+        const filesToAdd = files.slice(0, remainingSlots);
+        
+        if (files.length > remainingSlots) {
+            showMessage('creatorMessage', `⚠️ Limited to 60 images. Added ${filesToAdd.length}, skipped ${files.length - remainingSlots}.`, 'error');
+        }
+
+        filesToAdd.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                selectedImages.push({ file: file, dataUrl: e.target.result });
+                updateImagePreview();
+            };
+            reader.readAsDataURL(file);
+        });
+        
+        document.getElementById('fileInput').value = '';
+    }
+
+    function updateImagePreview() {
+        const previewSection = document.getElementById('previewSection');
+        const imageGrid = document.getElementById('imageGrid');
+        const imageCounter = document.getElementById('imageCounter');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        imageCounter.textContent = `${selectedImages.length} Image${selectedImages.length !== 1 ? 's' : ''}`;
+        previewSection.style.display = selectedImages.length > 0 ? 'block' : 'none';
+        submitBtn.disabled = selectedImages.length === 0;
+        
+        imageGrid.innerHTML = '';
+        selectedImages.forEach((img, index) => {
+            const card = document.createElement('div');
+            card.className = 'image-card';
+            card.innerHTML = `
+                <img src="${img.dataUrl}" alt="Preview ${index + 1}">
+                <button class="remove-btn" onclick="removeImage(${index})">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            imageGrid.appendChild(card);
+        });
+    }
+
+    function removeImage(index) {
+        selectedImages.splice(index, 1);
+        updateImagePreview();
+    }
+
+    // ================= UPLOAD TO IMGBBB =================
+    async function uploadToImgBB() {
+        if (selectedImages.length === 0) {
+            showMessage('creatorMessage', '❌ Please select at least one image.', 'error');
+            return;
+        }
+
+        showLoading('Uploading images...');
+        const imageUrls = [];
+
+        try {
+            // Upload each image
+            for (let i = 0; i < selectedImages.length; i++) {
+                showLoading(`Uploading image ${i + 1} of ${selectedImages.length}...`);
+                
+                const dataUrl = selectedImages[i].dataUrl;
+                const base64Data = dataUrl.split(',')[1];
+                
+                if (!base64Data) {
+                    throw new Error(`Image ${i + 1}: Could not process image`);
+                }
+
+                const formData = new FormData();
+                formData.append('image', base64Data);
+                
+                const response = await fetch('https://api.imgbb.com/1/upload?key=cf207e0fc45a6df862481f81e0d25065', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    imageUrls.push(data.data.url);
+                    console.log(`✅ Image ${i+1} uploaded to ImgBB: ${data.data.url.substring(0, 50)}...`);
+                } else {
+                    throw new Error(`Failed to upload image ${i + 1}: ${data.error?.message || 'Unknown error'}`);
+                }
+            }
+
+            // Create project in backend
+            showLoading('Creating project...');
+            const projectName = document.getElementById('projectName').value.trim();
+            currentProjectName = projectName || `Project ${new Date().toLocaleDateString()}`;
+            
+            const response = await fetch(BACKEND_URL + '/api/products', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    imageUrls: imageUrls,
+                    projectName: currentProjectName
+                })
+            });
+            
+            const result = await response.json();
+            hideLoading();
+            
+            if (result.success) {
+                // Show success
+                document.getElementById('productCount').textContent = result.productCount;
+                const fullLink = result.inquiryUrl || (window.location.origin + window.location.pathname + '?project=' + result.projectId);
+                document.getElementById('generatedProjectLink').href = fullLink;
+                document.getElementById('generatedProjectLink').textContent = fullLink;
+                document.getElementById('resultBox').classList.add('show');
+                showMessage('creatorMessage', `✅ Project created! Share the link with your shopkeeper.`, 'success');
+                currentProjectId = result.projectId;
+            } else {
+                throw new Error(result.error || 'Failed to create project');
+            }
+        } catch (error) {
+            hideLoading();
+            showMessage('creatorMessage', '❌ Error: ' + error.message, 'error');
+            console.error('Upload error:', error);
+        }
+    }
+
+    // ================= SHOPKEEPER VIEW =================
+    async function loadProjectForResponse(projectId) {
+        showLoading('Loading project...');
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/products?project=${projectId}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            hideLoading();
+            
+            if (data.success) {
+                currentProducts = data.products;
+                currentProjectName = data.project.name;
+                renderResponseForm(data.project, data.products);
+            } else {
+                showResponseError('Project not found or has been deleted.');
+            }
+        } catch (error) {
+            hideLoading();
+            console.error('Load project error:', error);
+            showResponseError('Could not load project. Please check the link and try again.');
+        }
+    }
+
+    function renderResponseForm(project, products) {
+        let html = `
+            <div class="project-header">
+                <h1><i class="fas fa-project-diagram"></i> ${project.name || 'Product Inquiry'}</h1>
+                <p style="color:var(--text-secondary);">Please provide prices in UGX for each product.</p>
+                <div class="message success" style="margin:20px 0; display:block;">
+                    <i class="fas fa-info-circle"></i> You can submit each product individually or use the "Submit All" button.
+                </div>
+            </div>
+            <div class="products-container">
+        `;
+        
+        products.forEach((product, index) => {
+            html += `
+                <div class="product-item" id="product-${product.id}">
+                    <h3><i class="fas fa-cube"></i> Item ${index + 1} of ${products.length}</h3>
+                    <img src="${product.imageUrl}" alt="Product ${index + 1}" class="product-image" 
+                         onerror="this.src='https://via.placeholder.com/400x300?text=Image+Not+Available'">
+                    <div class="product-form">
+                        <label for="price-${product.id}">Price (UGX) *</label>
+                        <div class="price-input">
+                            <div class="currency-prefix">UGX</div>
+                            <input type="number" id="price-${product.id}" step="1" min="0" placeholder="Enter amount" required>
+                        </div>
+                        <label for="colors-${product.id}">Available Colors / Variations (Optional)</label>
+                        <input type="text" id="colors-${product.id}" placeholder="e.g., Red, Blue, Green">
+                        <label for="notes-${product.id}">Additional Notes (Optional)</label>
+                        <textarea id="notes-${product.id}" rows="2" placeholder="Condition, stock, delivery time..."></textarea>
+                        <button class="browse-btn" style="margin-top:20px;" onclick="submitSingleInquiry('${product.id}', ${index + 1})">
+                            <i class="fas fa-paper-plane"></i> Submit for This Item
+                        </button>
+                        <div id="message-${product.id}" style="margin-top:15px; min-height:24px;"></div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += `
+            </div>
+            <div style="text-align:center; margin-top:50px; padding-top:30px; border-top:2px solid var(--bg-card-light);">
+                <button class="submit-btn" onclick="submitAllInquiries()" style="padding:20px 50px;">
+                    <i class="fas fa-paper-plane"></i> Submit All Responses at Once
+                </button>
+                <div id="allResponsesMessage" style="margin-top:20px; min-height:30px;"></div>
+            </div>
+        `;
+        
+        document.getElementById('responderContent').innerHTML = html;
+    }
+
+    // ================= EMAIL SUBMISSION FUNCTIONS =================
+    async function submitSingleInquiry(productId, itemNumber) {
+        const priceInput = document.getElementById(`price-${productId}`);
+        const colorsInput = document.getElementById(`colors-${productId}`);
+        const notesInput = document.getElementById(`notes-${productId}`);
+        const messageEl = document.getElementById(`message-${productId}`);
+        
+        const price = priceInput.value.trim();
+        const colors = colorsInput.value.trim();
+        const notes = notesInput.value.trim();
+        
+        if (!price || isNaN(price) || Number(price) <= 0) {
+            messageEl.innerHTML = '<span style="color:var(--accent-red);">❌ Please enter a valid price in UGX.</span>';
+            priceInput.focus();
+            return;
+        }
+        
+        messageEl.innerHTML = '<span style="color:var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Sending email to Marvin...</span>';
+        priceInput.disabled = true;
+        colorsInput.disabled = true;
+        notesInput.disabled = true;
+        
+        try {
+            // Get the product image URL
+            const product = currentProducts.find(p => p.id === productId);
+            const imageUrl = product?.imageUrl || '';
+            
+            // Format the price with commas
+            const formattedPrice = `UGX ${Number(price).toLocaleString()}`;
+            
+            // Format date nicely
+            const now = new Date();
+            const formattedDate = now.toLocaleString('en-US', {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            // Prepare email data for SINGLE item
+            const emailData = {
+                to_email: 'epignosistic@gmail.com',
+                project_name: currentProjectName || 'Product Inquiry',
+                product_id: productId,
+                item_number: itemNumber,
+                product_image: imageUrl,
+                price: formattedPrice,
+                colors: colors || 'Not specified',
+                notes: notes || 'None',
+                submitted_at: formattedDate,
+                layout_type: 'single',
+                total_items: currentProducts.length,
+                currentYear: now.getFullYear().toString()
+            };
+            
+            console.log('📧 Sending single item email:', emailData);
+            
+            // Send email via EmailJS
+            const response = await emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_TEMPLATE_ID,
+                emailData
+            );
+            
+            if (response.status === 200) {
+                messageEl.innerHTML = '<span style="color:var(--accent-green);">✅ Price submitted! Email sent to Marvin.</span>';
+                priceInput.style.borderColor = 'var(--accent-green)';
+                priceInput.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                
+                // Mark as submitted in UI
+                const submitBtn = priceInput.parentElement.parentElement.querySelector('.browse-btn');
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> Submitted';
+                    submitBtn.style.background = 'linear-gradient(135deg, var(--accent-green), #059669)';
+                    submitBtn.disabled = true;
+                    submitBtn.onclick = null;
+                }
+                
+                console.log('✅ Single item email sent successfully:', response);
+            } else {
+                throw new Error(`Email failed with status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Email submission error:', error);
+            messageEl.innerHTML = `<span style="color:var(--accent-red);">❌ Error: ${error.message || 'Failed to send email'}</span>`;
+            priceInput.disabled = false;
+            colorsInput.disabled = false;
+            notesInput.disabled = false;
+        }
+    }
+
+    async function submitAllInquiries() {
+        const allResponsesMessage = document.getElementById('allResponsesMessage');
+        allResponsesMessage.innerHTML = '<span style="color:var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Collecting and sending all responses...</span>';
+        
+        let submittedCount = 0;
+        const allResponses = [];
+        const now = new Date();
+        const formattedDate = now.toLocaleString('en-US', {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        // Collect all responses
+        for (let i = 0; i < currentProducts.length; i++) {
+            const product = currentProducts[i];
+            const priceInput = document.getElementById(`price-${product.id}`);
+            const price = priceInput?.value.trim();
+            
+            if (price && !isNaN(price) && Number(price) > 0) {
+                const colors = document.getElementById(`colors-${product.id}`)?.value.trim() || '';
+                const notes = document.getElementById(`notes-${product.id}`)?.value.trim() || '';
+                
+                allResponses.push({
+                    product_id: product.id,
+                    item_number: i + 1,
+                    product_image: product.imageUrl || '',
+                    price: `UGX ${Number(price).toLocaleString()}`,
+                    colors: colors || 'Not specified',
+                    notes: notes || 'None'
+                });
+                
+                submittedCount++;
+            }
+        }
+        
+        if (allResponses.length === 0) {
+            allResponsesMessage.innerHTML = '<span style="color:var(--accent-red);">❌ No prices entered to submit.</span>';
+            return;
+        }
+        
+        try {
+            // Generate HTML for batch email
+            const responsesHTML = generateResponsesHTML(allResponses);
+            
+            // Prepare email data for BATCH
+            const emailData = {
+                to_email: 'epignosistic@gmail.com',
+                project_name: currentProjectName || 'Product Inquiry',
+                submitted_at: formattedDate,
+                total_items: allResponses.length.toString(),
+                layout_type: 'batch',
+                responses_html: responsesHTML,
+                currentYear: now.getFullYear().toString()
+            };
+            
+            console.log('📧 Sending batch email for', allResponses.length, 'items');
+            
+            // Send batch email
+            const response = await emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_TEMPLATE_ID,
+                emailData
+            );
+            
+            if (response.status === 200) {
+                // Update UI for all submitted products
+                allResponses.forEach(response => {
+                    const priceInput = document.getElementById(`price-${response.product_id}`);
+                    const colorsInput = document.getElementById(`colors-${response.product_id}`);
+                    const notesInput = document.getElementById(`notes-${response.product_id}`);
+                    const submitBtn = priceInput?.parentElement.parentElement.querySelector('.browse-btn');
+                    
+                    if (priceInput) priceInput.disabled = true;
+                    if (colorsInput) colorsInput.disabled = true;
+                    if (notesInput) notesInput.disabled = true;
+                    
+                    if (submitBtn) {
+                        submitBtn.innerHTML = '<i class="fas fa-check"></i> Submitted';
+                        submitBtn.style.background = 'linear-gradient(135deg, var(--accent-green), #059669)';
+                        submitBtn.disabled = true;
+                    }
+                    
+                    // Update individual message
+                    const messageEl = document.getElementById(`message-${response.product_id}`);
+                    if (messageEl) {
+                        messageEl.innerHTML = '<span style="color:var(--accent-green);">✅ Submitted in batch</span>';
+                    }
+                });
+                
+                allResponsesMessage.innerHTML = `<span style="color:var(--accent-green);">✅ ${submittedCount} price(s) emailed to Marvin!</span>`;
+                setTimeout(() => {
+                    alert(`Thank you! ${submittedCount} price(s) have been submitted to Marvin.`);
+                }, 500);
+                
+                console.log('✅ Batch email sent successfully:', response);
+            } else {
+                throw new Error(`Batch email failed with status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Batch email error:', error);
+            allResponsesMessage.innerHTML = `<span style="color:var(--accent-red);">❌ Error: ${error.message || 'Failed to send batch email'}</span>`;
+        }
+    }
+    
+    function generateResponsesHTML(responses) {
+        let html = '';
+        responses.forEach(response => {
+            html += `
+                <div style="margin-bottom: 25px; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; background: white; display: flex; gap: 20px; align-items: flex-start;">
+                    <div style="flex: 0 0 250px;">
+                        ${response.product_image ? 
+                            `<img src="${response.product_image}" alt="Product ${response.item_number}" style="width: 100%; max-width: 250px; height: 187px; object-fit: cover; border-radius: 8px; border: 2px solid #ddd; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">` :
+                            `<div style="width: 250px; height: 187px; background: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #888; font-style: italic; border: 2px dashed #ccc;">No Image</div>`
+                        }
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="display: inline-block; background: #4f46e5; color: white; padding: 5px 15px; border-radius: 20px; font-weight: 600; font-size: 14px; margin-bottom: 10px;">
+                            Item ${response.item_number}
+                        </div>
+                        <div style="font-size: 28px; font-weight: 800; color: #10b981; margin: 10px 0; padding: 10px 0; border-bottom: 2px solid #f0f0f0;">
+                            ${response.price}
+                        </div>
+                        <div style="margin: 12px 0; display: flex;">
+                            <div style="font-weight: 700; color: #555; min-width: 100px;">🎨 Colors:</div>
+                            <div style="flex: 1; color: #333;">${response.colors}</div>
+                        </div>
+                        <div style="margin: 12px 0; display: flex;">
+                            <div style="font-weight: 700; color: #555; min-width: 100px;">📝 Notes:</div>
+                            <div style="flex: 1; color: #333;">${response.notes}</div>
+                        </div>
+                        <div style="margin-top: 15px; font-size: 12px; color: #888;">
+                            Product ID: ${response.product_id}
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        return html;
+    }
+
+    function showResponseError(message) {
+        document.getElementById('responderContent').innerHTML = `
+            <div style="text-align:center; padding:60px 20px;">
+                <h2 style="color:var(--accent-red);"><i class="fas fa-exclamation-triangle"></i> Error Loading Project</h2>
+                <p style="color:var(--text-secondary); margin:20px 0;">${message}</p>
+                <button class="browse-btn" onclick="location.reload()">
+                    <i class="fas fa-redo"></i> Try Again
+                </button>
+            </div>
+        `;
+    }
+
+    // ================= UTILITY FUNCTIONS =================
+    function showLoading(text) {
+        document.getElementById('loadingText').textContent = text;
+        document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+    
+    function hideLoading() {
+        document.getElementById('loadingOverlay').style.display = 'none';
+    }
+    
+    function showMessage(elementId, text, type) {
+        const el = document.getElementById(elementId);
+        el.innerHTML = text;
+        el.className = 'message ' + (type || '');
+        el.style.display = 'block';
+        setTimeout(() => { el.style.display = 'none'; }, 5000);
+    }
+    
+    function copyProjectLink() {
+        const link = document.getElementById('generatedProjectLink').href;
+        navigator.clipboard.writeText(link).then(() => {
+            showMessage('creatorMessage', '✅ Link copied to clipboard!', 'success');
+        }).catch(err => {
+            console.error('Copy failed:', err);
+            showMessage('creatorMessage', '❌ Failed to copy link', 'error');
+        });
+    }
+</script>
+</body>
+=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1029,4 +2167,5 @@
     });
 </script>
 </body>
+>>>>>>> c3d096067e492d02b764a2720788abd7cd8bcf78
 </html>

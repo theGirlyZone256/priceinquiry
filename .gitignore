@@ -1,0 +1,6 @@
+# Create or edit .gitignore file
+echo "sendgrid API.txt" >> .gitignore
+echo "*.txt" >> .gitignore
+echo ".env" >> .gitignore
+echo "node_modules/" >> .gitignore
+echo ".env.local" >> .gitignore
