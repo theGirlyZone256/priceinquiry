@@ -878,7 +878,7 @@
             
             // Prepare email data - ONLY product_image and price
             const emailData = {
-                to_email: 'epignosistic@gmail.com',
+                email: 'epignosistic@gmail.com',
                 product_image: imageUrl,
                 price: formattedPrice
             };
@@ -953,7 +953,7 @@
         for (const response of allResponses) {
             try {
                 const emailData = {
-                    to_email: 'epignosistic@gmail.com',
+                    email: 'epignosistic@gmail.com',
                     product_image: response.product_image,
                     price: response.price
                 };
