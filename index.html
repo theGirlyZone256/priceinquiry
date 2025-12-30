@@ -946,34 +946,26 @@ async function submitAllInquiries() {
     
     try {
         // Generate HTML for ALL products in ONE email
-        let productsHTML = '';
-        
-        allResponses.forEach((response, index) => {
-            // Add separator line except for first item
-            const separator = index > 0 ? '<div style="height: 30px; border-top: 1px solid #e0e0e0; margin: 40px 0;"></div>' : '';
-            
-            productsHTML += separator + `
-                <div style="max-width: 800px; margin: 0 auto; background: white; border-radius: 2px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); border-top: 4px solid #2c3e50;">
-                    <div style="display: flex; align-items: flex-start; gap: 30px;">
-                        <div style="flex: 1; min-width: 0; position: relative;">
-                            <img src="${response.product_image}" alt="Product" style="width: 100%; height: auto; display: block; border-radius: 1px; border: 1px solid #e0e0e0; aspect-ratio: 4/3; object-fit: cover;">
-                            
-                            <!-- Mobile price overlay -->
-                            <div style="display: none; position: absolute; bottom: 15px; right: 15px; background: white; padding: 12px 20px; border-radius: 1px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); border: 1px solid #e0e0e0; text-align: right; min-width: 140px;">
-                                <div style="font-size: 12px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">Price</div>
-                                <div style="font-size: 24px; font-weight: 600; color: #2c3e50;">${response.price}</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Desktop price section -->
-                        <div style="flex: 0 0 250px; display: flex; flex-direction: column; justify-content: center; padding: 20px;">
-                            <div style="font-size: 14px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Price</div>
-                            <div style="font-size: 36px; font-weight: 600; color: #2c3e50; letter-spacing: 0.5px;">${response.price}</div>
-                        </div>
-                    </div>
+       let productsHTML = '';
+
+allResponses.forEach((response, index) => {
+    // Add separator line except for first item
+    const separator = index > 0 ? '<div class="product-separator"></div>' : '';
+    
+    productsHTML += separator + `
+        <div class="product-card">
+            <div class="image-container">
+                <img src="${response.product_image}" alt="Product" class="product-image">
+                <div class="no-image">No Image Available</div>
+                <div class="price-badge">
+                    <div class="price-label">Price</div>
+                    <div class="price-amount">${response.price}</div>
                 </div>
-            `;
-        });
+                <div class="item-number">Item ${index + 1}</div>
+            </div>
+        </div>
+    `;
+});
         
         // Prepare batch email data - send to BATCH template
         const batchEmailData = {
